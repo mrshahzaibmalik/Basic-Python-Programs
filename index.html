@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basic Python Program By Shahzaib Malik</title>
+<style>
+:root{
+  --bg:#12151b;
+  --panel:#181c24;
+  --panel-2:#1e232d;
+  --line:rgba(255,255,255,0.08);
+  --line-strong:rgba(255,255,255,0.16);
+  --text:#dfe3ea;
+  --text-dim:#8992a3;
+  --accent:#e8a33d;
+  --accent-dim:#8a6423;
+  --keyword:#7fb0e0;
+  --string:#9bd6a4;
+  --comment:#5f6779;
+  --number:#e0956f;
+  --paper:#f4efe1;
+  --paper-2:#eae3cf;
+  --ink:#2c2820;
+  --ink-dim:#726b58;
+  --danger:#e0705f;
+  --mono: ui-monospace, "Cascadia Code", "SF Mono", "JetBrains Mono", Consolas, "Roboto Mono", monospace;
+  --sans: -apple-system, "Segoe UI", system-ui, Helvetica, Arial, sans-serif;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  min-height:100vh;
+  padding-bottom:36px;
+}
+
+a{color:inherit;}
+
+/* ---------- layout shell ---------- */
+.app{
+  display:grid;
+  grid-template-columns:280px 1fr;
+  grid-template-rows:auto 1fr;
+  grid-template-areas:
+    "header header"
+    "sidebar main";
+  min-height:100vh;
+}
+
+@media (max-width:860px){
+  .app{grid-template-columns:1fr;grid-template-areas:"header" "sidebar" "main";}
+}
+
+/* ---------- header ---------- */
+.header{
+  grid-area:header;
+  padding:22px 28px 18px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:baseline;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.header .brand-mark{
+  font-family:var(--mono);
+  font-size:13px;
+  letter-spacing:0.12em;
+  color:var(--accent);
+  border:1px solid var(--accent-dim);
+  padding:3px 8px;
+  border-radius:3px;
+  text-transform:uppercase;
+}
+.header h1{
+  font-size:19px;
+  font-weight:600;
+  margin:0;
+  letter-spacing:-0.01em;
+}
+.header p{
+  margin:0;
+  color:var(--text-dim);
+  font-size:13px;
+  flex-basis:100%;
+}
+
+/* ---------- sidebar ---------- */
+.sidebar{
+  grid-area:sidebar;
+  border-right:1px solid var(--line);
+  overflow-y:auto;
+  max-height:calc(100vh - 78px);
+  padding:16px 0 40px;
+}
+@media (max-width:860px){
+  .sidebar{max-height:min(50vh, 420px);border-right:none;border-bottom:1px solid var(--line);}
+}
+
+.search-wrap{
+  padding:0 16px 14px;
+  position:sticky;
+  top:0;
+  background:var(--bg);
+  z-index:5;
+}
+.search-wrap input{
+  width:100%;
+  background:var(--panel);
+  border:1px solid var(--line-strong);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:13px;
+  padding:9px 10px;
+  border-radius:6px;
+  outline:none;
+}
+.search-wrap input:focus{border-color:var(--accent);}
+.search-wrap input::placeholder{color:var(--text-dim);}
+
+.part-group{margin-bottom:4px;}
+.part-toggle{
+  width:100%;
+  text-align:left;
+  background:none;
+  border:none;
+  color:var(--text-dim);
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  padding:10px 16px 6px;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.part-toggle:hover{color:var(--text);}
+.part-toggle .chev{transition:transform .15s ease;font-size:10px;}
+.part-group.collapsed .chev{transform:rotate(-90deg);}
+.part-list{list-style:none;margin:0;padding:0 8px 6px;}
+.part-group.collapsed .part-list{display:none;}
+
+.prog-item{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  width:100%;
+  text-align:left;
+  background:none;
+  border:none;
+  color:var(--text);
+  padding:6px 8px;
+  font-size:13px;
+  border-radius:5px;
+  cursor:pointer;
+  font-family:var(--sans);
+}
+.prog-item:hover{background:var(--panel);}
+.prog-item.active{background:var(--panel-2);color:var(--accent);}
+.prog-item .n{
+  font-family:var(--mono);
+  color:var(--text-dim);
+  font-size:11px;
+  min-width:22px;
+}
+.prog-item.active .n{color:var(--accent);}
+
+/* ---------- main ---------- */
+.main{
+  grid-area:main;
+  padding:26px 28px 60px;
+  overflow-y:auto;
+  max-height:calc(100vh - 78px);
+}
+@media (max-width:860px){.main{max-height:none;}}
+
+.prog-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:16px;
+  flex-wrap:wrap;
+  margin-bottom:16px;
+}
+.prog-eyebrow{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--accent);
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  margin:0 0 6px;
+}
+.prog-title{
+  font-size:24px;
+  font-weight:600;
+  margin:0;
+  letter-spacing:-0.01em;
+}
+.prog-flags{
+  display:flex;
+  gap:6px;
+  margin-top:8px;
+}
+.flag{
+  font-family:var(--mono);
+  font-size:10.5px;
+  color:var(--text-dim);
+  border:1px solid var(--line-strong);
+  padding:2px 7px;
+  border-radius:20px;
+}
+
+.run-btn{
+  font-family:var(--mono);
+  font-size:13px;
+  font-weight:600;
+  color:#1a1406;
+  background:var(--accent);
+  border:none;
+  padding:10px 20px;
+  border-radius:6px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  transition:filter .15s ease, transform .05s ease;
+}
+.run-btn:hover{filter:brightness(1.08);}
+.run-btn:active{transform:scale(0.98);}
+.run-btn:disabled{opacity:0.55;cursor:progress;}
+.run-status{
+  font-family:var(--mono);
+  font-size:11.5px;
+  color:var(--text-dim);
+  margin-top:6px;
+  min-height:14px;
+}
+
+/* ---------- split panes ---------- */
+.panes{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  align-items:start;
+}
+@media (max-width:980px){.panes{grid-template-columns:1fr;}}
+
+.pane-label{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  margin:0 0 8px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
+.dot.code{background:var(--keyword);}
+.dot.paper{background:var(--accent);}
+
+/* code editor pane */
+.editor{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+}
+.editor-bar{
+  display:flex;
+  gap:6px;
+  padding:10px 12px;
+  border-bottom:1px solid var(--line);
+}
+.editor-bar span{width:9px;height:9px;border-radius:50%;background:var(--line-strong);}
+.editor pre{
+  margin:0;
+  padding:16px;
+  font-family:var(--mono);
+  font-size:13px;
+  line-height:1.65;
+  overflow-x:auto;
+  white-space:pre;
+}
+.kw{color:var(--keyword);}
+.st{color:var(--string);}
+.cm{color:var(--comment);font-style:italic;}
+.nm{color:var(--number);}
+.fn{color:#d0a8e8;}
+
+/* output / printer pane */
+.printer{
+  position:relative;
+  background:var(--paper);
+  border-radius:2px;
+  color:var(--ink);
+  box-shadow:0 12px 28px rgba(0,0,0,0.35);
+}
+.printer::before{
+  content:"";
+  display:block;
+  height:12px;
+  background-image:radial-gradient(circle at 8px 6px, var(--bg) 5px, transparent 5.5px);
+  background-size:16px 12px;
+  background-repeat:repeat-x;
+  background-position:-2px 0;
+}
+.printer-inner{padding:6px 18px 20px;}
+.printer-meta{
+  font-family:var(--mono);
+  font-size:10.5px;
+  color:var(--ink-dim);
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px dashed var(--paper-2);
+  padding-bottom:8px;
+  margin-bottom:10px;
+}
+.printer-body{
+  font-family:var(--mono);
+  font-size:13px;
+  line-height:1.7;
+  white-space:pre-wrap;
+  word-break:break-word;
+  min-height:64px;
+}
+.printer-body .cursor{
+  display:inline-block;
+  width:7px;height:14px;
+  background:var(--ink);
+  vertical-align:-2px;
+  animation:blink 1s steps(1) infinite;
+}
+@keyframes blink{50%{opacity:0;}}
+.printer-placeholder{color:var(--ink-dim);font-style:italic;}
+.printer-error{color:#a83b2c;}
+
+.note{
+  font-size:12px;
+  color:var(--text-dim);
+  margin-top:14px;
+  line-height:1.6;
+  max-width:70ch;
+}
+.note b{color:var(--text);}
+
+.empty-state{color:var(--text-dim);font-family:var(--mono);font-size:13px;}
+
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+
+.footer-note{
+  margin-top:40px;
+  padding-top:16px;
+  border-top:1px solid var(--line);
+  font-size:12px;
+  color:var(--text-dim);
+  font-family:var(--mono);
+}
+
+/* ---------- connect bar (main screen, below printout) ---------- */
+/* ---------- promo banner (fills space below output) ---------- */
+.promo-banner{
+  margin-top:26px;
+  border:1px solid var(--accent-dim);
+  border-left:3px solid var(--accent);
+  border-radius:10px;
+  background:linear-gradient(135deg, rgba(232,163,61,0.08), rgba(232,163,61,0.02));
+  padding:22px 24px;
+}
+.promo-eyebrow{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin:0 0 8px;
+}
+.promo-title{
+  font-size:18px;
+  font-weight:700;
+  margin:0 0 6px;
+  color:var(--text);
+}
+.promo-body{
+  font-size:13.5px;
+  color:var(--text-dim);
+  margin:0 0 16px;
+  line-height:1.6;
+  max-width:56ch;
+}
+.promo-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.promo-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  text-decoration:none;
+  font-family:var(--sans);
+  font-weight:600;
+  font-size:13px;
+  padding:10px 18px;
+  border-radius:8px;
+  transition:filter .15s ease, transform .05s ease;
+}
+.promo-btn:active{transform:scale(0.98);}
+.promo-btn.primary{background:var(--accent);color:#1a1406;}
+.promo-btn.primary:hover{filter:brightness(1.08);}
+.promo-btn.secondary{background:transparent;border:1px solid var(--line-strong);color:var(--text);}
+.promo-btn.secondary:hover{border-color:var(--accent);color:var(--accent);}
+
+.connect-bar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:22px;
+  padding-top:18px;
+  border-top:1px solid var(--line);
+}
+.connect-link{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  text-decoration:none;
+  color:var(--text-dim);
+  background:var(--panel);
+  border:1px solid var(--line-strong);
+  padding:8px 14px;
+  border-radius:20px;
+  font-family:var(--sans);
+  font-size:12.5px;
+  transition:color .15s ease, border-color .15s ease, transform .05s ease;
+}
+.connect-link svg{flex:none;}
+.connect-link:active{transform:scale(0.98);}
+.connect-link.yt:hover{color:#ff5252;border-color:#ff5252;}
+.connect-link.ig:hover{color:#e0679f;border-color:#e0679f;}
+.connect-link.wa:hover{color:#5fd68a;border-color:#5fd68a;}
+
+/* ---------- running marquee footer ---------- */
+.marquee-footer{
+  position:fixed;
+  left:0;right:0;bottom:0;
+  height:34px;
+  background:var(--panel-2);
+  border-top:1px solid var(--line);
+  overflow:hidden;
+  z-index:80;
+  display:flex;
+  align-items:center;
+}
+.marquee-track{
+  display:flex;
+  align-items:center;
+  white-space:nowrap;
+  animation:marquee-scroll 24s linear infinite;
+}
+.marquee-footer:hover .marquee-track{animation-play-state:paused;}
+.marquee-group{
+  display:flex;
+  align-items:center;
+  gap:28px;
+  padding-right:28px;
+}
+.marquee-track a{
+  color:var(--text-dim);
+  font-family:var(--mono);
+  font-size:11.5px;
+  text-decoration:none;
+  letter-spacing:0.02em;
+}
+.marquee-track a:hover{color:var(--accent);}
+.marquee-track .credit{
+  font-family:var(--mono);
+  font-size:11.5px;
+  color:var(--text-dim);
+}
+.marquee-track .credit b{color:var(--accent);}
+.marquee-track .sep{color:var(--line-strong);}
+@keyframes marquee-scroll{
+  from{transform:translateX(0);}
+  to{transform:translateX(-50%);}
+}
+@media (prefers-reduced-motion: reduce){
+  .marquee-track{animation:none;overflow-x:auto;}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="header">
+    <h1>Basic Python Program By Shahzaib Malik</h1>
+    <p>Pick a program on the left, read the code, hit Run — the printout on the right is a live Python run, not a canned answer.</p>
+  </header>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="search-wrap">
+      <input type="text" id="search" placeholder="Search programs…" autocomplete="off">
+    </div>
+    <div id="partsContainer"></div>
+  </nav>
+
+  <main class="main" id="main">
+    <div class="empty-state">Loading programs…</div>
+  </main>
+</div>
+
+<footer class="marquee-footer" aria-label="Credits and social links">
+  <div class="marquee-track" id="marqueeTrack"></div>
+</footer>
+
+<script id="program-data" type="application/json">[{"id": 1, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Hello World", "code": "print(\"hello world\")", "output": "hello world", "usesInput": false, "usesRandom": false}, {"id": 2, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Print your name", "code": "name = input(\"Enter your name: \")\nprint(\"Hello,\", name)", "output": "Hello, Alex", "usesInput": true, "usesRandom": false}, {"id": 3, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Add two numbers", "code": "a, b = 5, 3\nprint(a + b)", "output": "8", "usesInput": false, "usesRandom": false}, {"id": 4, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Subtract two numbers", "code": "a, b = 10, 4\nprint(a - b)", "output": "6", "usesInput": false, "usesRandom": false}, {"id": 5, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Multiply two numbers", "code": "a, b = 6, 7\nprint(a * b)", "output": "42", "usesInput": false, "usesRandom": false}, {"id": 6, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Divide two numbers", "code": "a, b = 10, 3\nprint(a / b, a // b, a % b)", "output": "3.3333333333333335 3 1", "usesInput": false, "usesRandom": false}, {"id": 7, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Square of a number", "code": "n = 5\nprint(n ** 2)", "output": "25", "usesInput": false, "usesRandom": false}, {"id": 8, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Area of a rectangle", "code": "length, width = 5, 3\nprint(\"Area:\", length * width)", "output": "Area: 15", "usesInput": false, "usesRandom": false}, {"id": 9, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Area of a circle", "code": "r = 4\npi = 3.14159\nprint(\"Area:\", pi * r ** 2)", "output": "Area: 50.26544", "usesInput": false, "usesRandom": false}, {"id": 10, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Celsius to Fahrenheit", "code": "c = 25\nf = (c * 9/5) + 32\nprint(f, \"F\")", "output": "77.0 F", "usesInput": false, "usesRandom": false}, {"id": 11, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Swap two variables", "code": "a, b = 5, 10\na, b = b, a\nprint(a, b)", "output": "10 5", "usesInput": false, "usesRandom": false}, {"id": 12, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Check even or odd", "code": "n = 7\nprint(\"Even\" if n % 2 == 0 else \"Odd\")", "output": "Odd", "usesInput": false, "usesRandom": false}, {"id": 13, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Check positive, negative, or zero", "code": "n = -3\nif n > 0:\n    print(\"Positive\")\nelif n < 0:\n    print(\"Negative\")\nelse:\n    print(\"Zero\")", "output": "Negative", "usesInput": false, "usesRandom": false}, {"id": 14, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Largest of two numbers", "code": "a, b = 8, 15\nprint(a if a > b else b)", "output": "15", "usesInput": false, "usesRandom": false}, {"id": 15, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Largest of three numbers", "code": "a, b, c = 4, 9, 6\nprint(max(a, b, c))", "output": "9", "usesInput": false, "usesRandom": false}, {"id": 16, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Simple calculator", "code": "a, b, op = 10, 5, \"+\"\nif op == \"+\": print(a + b)\nelif op == \"-\": print(a - b)\nelif op == \"*\": print(a * b)\nelif op == \"/\": print(a / b)", "output": "15", "usesInput": false, "usesRandom": false}, {"id": 17, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Check leap year", "code": "year = 2024\nis_leap = year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)\nprint(is_leap)", "output": "True", "usesInput": false, "usesRandom": false}, {"id": 18, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Kilometers to miles", "code": "km = 10\nmiles = km * 0.621371\nprint(miles)", "output": "6.21371", "usesInput": false, "usesRandom": false}, {"id": 19, "part": "Part 1: Absolute Basics (1\u201320)", "title": "Area of a triangle", "code": "base, height = 6, 4\nprint(\"Area:\", 0.5 * base * height)", "output": "Area: 12.0", "usesInput": false, "usesRandom": false}, {"id": 20, "part": "Part 1: Absolute Basics (1\u201320)", "title": "BMI calculator", "code": "weight, height = 70, 1.75\nbmi = weight / (height ** 2)\nprint(\"BMI:\", round(bmi, 2))", "output": "BMI: 22.86", "usesInput": false, "usesRandom": false}, {"id": 21, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Print numbers 1 to N", "code": "n = 10\nfor i in range(1, n + 1):\n    print(i)", "output": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10", "usesInput": false, "usesRandom": false}, {"id": 22, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Print even numbers 1 to N", "code": "n = 20\nfor i in range(2, n + 1, 2):\n    print(i)", "output": "2\n4\n6\n8\n10\n12\n14\n16\n18\n20", "usesInput": false, "usesRandom": false}, {"id": 23, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Sum of first N numbers", "code": "n = 10\ntotal = sum(range(1, n + 1))\nprint(total)", "output": "55", "usesInput": false, "usesRandom": false}, {"id": 24, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Factorial of a number", "code": "n = 5\nfact = 1\nfor i in range(1, n + 1):\n    fact *= i\nprint(fact)", "output": "120", "usesInput": false, "usesRandom": false}, {"id": 25, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Multiplication table", "code": "n = 7\nfor i in range(1, 11):\n    print(n, \"x\", i, \"=\", n * i)", "output": "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n7 x 10 = 70", "usesInput": false, "usesRandom": false}, {"id": 26, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Reverse a number", "code": "n = 12345\nrev = int(str(n)[::-1])\nprint(rev)", "output": "54321", "usesInput": false, "usesRandom": false}, {"id": 27, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Check palindrome number", "code": "n = 12321\nprint(str(n) == str(n)[::-1])", "output": "True", "usesInput": false, "usesRandom": false}, {"id": 28, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Check prime number", "code": "n = 17\nis_prime = n > 1 and all(n % i != 0 for i in range(2, int(n**0.5) + 1))\nprint(is_prime)", "output": "True", "usesInput": false, "usesRandom": false}, {"id": 29, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Print all primes up to N", "code": "n = 50\nfor num in range(2, n + 1):\n    if all(num % i != 0 for i in range(2, int(num**0.5) + 1)):\n        print(num)", "output": "2\n3\n5\n7\n11\n13\n17\n19\n23\n29\n31\n37\n41\n43\n47", "usesInput": false, "usesRandom": false}, {"id": 30, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Fibonacci series", "code": "n = 10\na, b = 0, 1\nfor _ in range(n):\n    print(a, end=\" \")\n    a, b = b, a + b", "output": "0 1 1 2 3 5 8 13 21 34", "usesInput": false, "usesRandom": false}, {"id": 31, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Sum of digits", "code": "n = 12345\nprint(sum(int(d) for d in str(n)))", "output": "15", "usesInput": false, "usesRandom": false}, {"id": 32, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Count digits in a number", "code": "n = 98765\nprint(len(str(n)))", "output": "5", "usesInput": false, "usesRandom": false}, {"id": 33, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Right triangle of stars", "code": "rows = 5\nfor i in range(1, rows + 1):\n    print(\"*\" * i)", "output": "*\n**\n***\n****\n*****", "usesInput": false, "usesRandom": false}, {"id": 34, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Pyramid pattern", "code": "rows = 5\nfor i in range(1, rows + 1):\n    print(\" \" * (rows - i) + \"*\" * (2 * i - 1))", "output": "*\n   ***\n  *****\n *******\n*********", "usesInput": false, "usesRandom": false}, {"id": 35, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Number triangle", "code": "rows = 5\nfor i in range(1, rows + 1):\n    print(\" \".join(str(j) for j in range(1, i + 1)))", "output": "1\n1 2\n1 2 3\n1 2 3 4\n1 2 3 4 5", "usesInput": false, "usesRandom": false}, {"id": 36, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Armstrong number check", "code": "n = 153\ndigits = str(n)\npower = len(digits)\nprint(n == sum(int(d) ** power for d in digits))", "output": "True", "usesInput": false, "usesRandom": false}, {"id": 37, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "GCD of two numbers", "code": "import math\na, b = 36, 60\nprint(math.gcd(a, b))", "output": "12", "usesInput": false, "usesRandom": false}, {"id": 38, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "LCM of two numbers", "code": "import math\na, b = 4, 6\nprint(a * b // math.gcd(a, b))", "output": "12", "usesInput": false, "usesRandom": false}, {"id": 39, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Multiplication tables 1\u201310", "code": "for n in range(1, 11):\n    for i in range(1, 11):\n        print(n, \"x\", i, \"=\", n * i)\n    print()", "output": "1 x 1 = 1\n1 x 2 = 2\n1 x 3 = 3\n1 x 4 = 4\n1 x 5 = 5\n1 x 6 = 6\n1 x 7 = 7\n1 x 8 = 8\n1 x 9 = 9\n1 x 10 = 10\n\n2 x 1 = 2\n2 x 2 = 4\n2 x 3 = 6\n2 x 4 = 8\n2 x 5 = 10\n2 x 6 = 12\n2 x 7 = 14\n2 x 8 = 16\n2 x 9 = 18\n2 x 10 = 20\n\n3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15\n3 x 6 = 18\n3 x 7 = 21\n3 x 8 = 24\n3 x 9 = 27\n3 x 10 = 30\n\n4 x 1 = 4\n4 x 2 = 8\n4 x 3 = 12\n4 x 4 = 16\n4 x 5 = 20\n4 x 6 = 24\n4 x 7 = 28\n4 x 8 = 32\n4 x 9 = 36\n4 x 10 = 40\n\n5 x 1 = 5\n5 x 2 = 10\n5 x 3 = 15\n5 x 4 = 20\n5 x 5 = 25\n5 x 6 = 30\n5 x 7 = 35\n5 x 8 = 40\n5 x 9 = 45\n5 x 10 = 50\n\n6 x 1 = 6\n6 x 2 = 12\n6 x 3 = 18\n6 x 4 = 24\n6 x 5 = 30\n6 x 6 = 36\n6 x 7 = 42\n6 x 8 = 48\n6 x 9 = 54\n6 x 10 = 60\n\n7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n7 x 10 = 70\n\n8 x 1 = 8\n8 x 2 = 16\n8 x 3 = 24\n8 x 4 = 32\n8 x 5 = 40\n8 x 6 = 48\n8 x 7 = 56\n8 x 8 = 64\n8 x 9 = 72\n8 x 10 = 80\n\n9 x 1 = 9\n9 x 2 = 18\n9 x 3 = 27\n9 x 4 = 36\n9 x 5 = 45\n9 x 6 = 54\n9 x 7 = 63\n9 x 8 = 72\n9 x 9 = 81\n9 x 10 = 90\n\n10 x 1 = 10\n10 x 2 = 20\n10 x 3 = 30\n10 x 4 = 40\n10 x 5 = 50\n10 x 6 = 60\n10 x 7 = 70\n10 x 8 = 80\n10 x 9 = 90\n10 x 10 = 100", "usesInput": false, "usesRandom": false}, {"id": 40, "part": "Part 2: Loops & Basic Logic (21\u201340)", "title": "Guess-the-number game", "code": "import random\ntarget = random.randint(1, 20)\nguess = int(input(\"Guess a number (1-20): \"))\nprint(\"Correct!\" if guess == target else f\"Wrong, it was {target}\")", "output": "Correct!", "usesInput": true, "usesRandom": true}, {"id": 41, "part": "Part 3: Strings (41\u201360)", "title": "Reverse a string", "code": "s = \"hello\"\nprint(s[::-1])", "output": "olleh", "usesInput": false, "usesRandom": false}, {"id": 42, "part": "Part 3: Strings (41\u201360)", "title": "Check palindrome string", "code": "s = \"madam\"\nprint(s == s[::-1])", "output": "True", "usesInput": false, "usesRandom": false}, {"id": 43, "part": "Part 3: Strings (41\u201360)", "title": "Count vowels", "code": "s = \"beginner practice\"\nprint(sum(1 for ch in s.lower() if ch in \"aeiou\"))", "output": "6", "usesInput": false, "usesRandom": false}, {"id": 44, "part": "Part 3: Strings (41\u201360)", "title": "Count words in a sentence", "code": "s = \"python is fun to learn\"\nprint(len(s.split()))", "output": "5", "usesInput": false, "usesRandom": false}, {"id": 45, "part": "Part 3: Strings (41\u201360)", "title": "Upper/lower case conversion", "code": "s = \"Hello World\"\nprint(s.upper(), s.lower())", "output": "HELLO WORLD hello world", "usesInput": false, "usesRandom": false}, {"id": 46, "part": "Part 3: Strings (41\u201360)", "title": "Character frequency count", "code": "from collections import Counter\ns = \"programming\"\nprint(Counter(s))", "output": "Counter({'r': 2, 'g': 2, 'm': 2, 'p': 1, 'o': 1, 'a': 1, 'i': 1, 'n': 1})", "usesInput": false, "usesRandom": false}, {"id": 47, "part": "Part 3: Strings (41\u201360)", "title": "Remove spaces from a string", "code": "s = \"h e l l o\"\nprint(s.replace(\" \", \"\"))", "output": "hello", "usesInput": false, "usesRandom": false}, {"id": 48, "part": "Part 3: Strings (41\u201360)", "title": "Check anagram", "code": "a, b = \"listen\", \"silent\"\nprint(sorted(a) == sorted(b))", "output": "True", "usesInput": false, "usesRandom": false}, {"id": 49, "part": "Part 3: Strings (41\u201360)", "title": "Longest word in a sentence", "code": "s = \"python programs are great for practice\"\nprint(max(s.split(), key=len))", "output": "programs", "usesInput": false, "usesRandom": false}, {"id": 50, "part": "Part 3: Strings (41\u201360)", "title": "Replace a character in a string", "code": "s = \"hello\"\nprint(s.replace(\"l\", \"L\"))", "output": "heLLo", "usesInput": false, "usesRandom": false}, {"id": 51, "part": "Part 3: Strings (41\u201360)", "title": "Count occurrences of a substring", "code": "s = \"abcabcabc\"\nprint(s.count(\"abc\"))", "output": "3", "usesInput": false, "usesRandom": false}, {"id": 52, "part": "Part 3: Strings (41\u201360)", "title": "Title case a sentence", "code": "s = \"the quick brown fox\"\nprint(s.title())", "output": "The Quick Brown Fox", "usesInput": false, "usesRandom": false}, {"id": 53, "part": "Part 3: Strings (41\u201360)", "title": "Check if a string is a number", "code": "s = \"12345\"\nprint(s.isdigit())", "output": "True", "usesInput": false, "usesRandom": false}, {"id": 54, "part": "Part 3: Strings (41\u201360)", "title": "String slicing practice", "code": "s = \"programming\"\nprint(s[0:4], s[-4:], s[::2])", "output": "prog ming pormig", "usesInput": false, "usesRandom": false}, {"id": 55, "part": "Part 3: Strings (41\u201360)", "title": "Concatenate strings", "code": "a, b = \"Hello\", \"World\"\nprint(a + \" \" + b)", "output": "Hello World", "usesInput": false, "usesRandom": false}, {"id": 56, "part": "Part 3: Strings (41\u201360)", "title": "Split and join strings", "code": "s = \"python,java,c++\"\nparts = s.split(\",\")\nprint(parts, \"-\".join(parts))", "output": "['python', 'java', 'c++'] python-java-c++", "usesInput": false, "usesRandom": false}, {"id": 57, "part": "Part 3: Strings (41\u201360)", "title": "Remove duplicate characters", "code": "s = \"programming\"\nprint(\"\".join(dict.fromkeys(s)))", "output": "progamin", "usesInput": false, "usesRandom": false}, {"id": 58, "part": "Part 3: Strings (41\u201360)", "title": "Check if substring exists", "code": "s = \"hello world\"\nprint(\"world\" in s)", "output": "True", "usesInput": false, "usesRandom": false}, {"id": 59, "part": "Part 3: Strings (41\u201360)", "title": "Count uppercase and lowercase letters", "code": "s = \"Hello World\"\nupper = sum(1 for c in s if c.isupper())\nlower = sum(1 for c in s if c.islower())\nprint(upper, lower)", "output": "2 8", "usesInput": false, "usesRandom": false}, {"id": 60, "part": "Part 3: Strings (41\u201360)", "title": "Simple Caesar cipher", "code": "def caesar(text, shift):\n    result = \"\"\n    for ch in text:\n        if ch.isalpha():\n            base = ord('A') if ch.isupper() else ord('a')\n            result += chr((ord(ch) - base + shift) % 26 + base)\n        else:\n            result += ch\n    return result\n\nprint(caesar(\"hello\", 3))", "output": "khoor", "usesInput": false, "usesRandom": false}, {"id": 61, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Find max/min in a list", "code": "nums = [4, 9, 2, 7, 5]\nprint(max(nums), min(nums))", "output": "9 2", "usesInput": false, "usesRandom": false}, {"id": 62, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Sum of list elements", "code": "nums = [1, 2, 3, 4, 5]\nprint(sum(nums))", "output": "15", "usesInput": false, "usesRandom": false}, {"id": 63, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Average of a list", "code": "nums = [10, 20, 30, 40]\nprint(sum(nums) / len(nums))", "output": "25.0", "usesInput": false, "usesRandom": false}, {"id": 64, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Sort a list", "code": "nums = [5, 2, 8, 1, 9]\nprint(sorted(nums))", "output": "[1, 2, 5, 8, 9]", "usesInput": false, "usesRandom": false}, {"id": 65, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Reverse a list", "code": "nums = [1, 2, 3, 4, 5]\nprint(nums[::-1])", "output": "[5, 4, 3, 2, 1]", "usesInput": false, "usesRandom": false}, {"id": 66, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Remove duplicates from a list", "code": "nums = [1, 2, 2, 3, 4, 4, 5]\nprint(list(set(nums)))", "output": "[1, 2, 3, 4, 5]", "usesInput": false, "usesRandom": false}, {"id": 67, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Find second largest number", "code": "nums = [10, 5, 20, 8, 15]\nunique = sorted(set(nums))\nprint(unique[-2])", "output": "15", "usesInput": false, "usesRandom": false}, {"id": 68, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Count occurrences of an element", "code": "nums = [1, 2, 2, 3, 2, 4]\nprint(nums.count(2))", "output": "3", "usesInput": false, "usesRandom": false}, {"id": 69, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Merge two lists", "code": "a, b = [1, 2, 3], [4, 5, 6]\nprint(a + b)", "output": "[1, 2, 3, 4, 5, 6]", "usesInput": false, "usesRandom": false}, {"id": 70, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "List of squares (list comprehension)", "code": "squares = [x**2 for x in range(1, 11)]\nprint(squares)", "output": "[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]", "usesInput": false, "usesRandom": false}, {"id": 71, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Common elements between two lists", "code": "a, b = [1, 2, 3, 4], [3, 4, 5, 6]\nprint(list(set(a) & set(b)))", "output": "[3, 4]", "usesInput": false, "usesRandom": false}, {"id": 72, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Check if a list is sorted", "code": "nums = [1, 2, 3, 4, 5]\nprint(nums == sorted(nums))", "output": "True", "usesInput": false, "usesRandom": false}, {"id": 73, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Flatten a nested list", "code": "nested = [[1, 2], [3, 4], [5, 6]]\nflat = [x for sub in nested for x in sub]\nprint(flat)", "output": "[1, 2, 3, 4, 5, 6]", "usesInput": false, "usesRandom": false}, {"id": 74, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Sum of even/odd numbers in a list", "code": "nums = [1, 2, 3, 4, 5, 6]\neven_sum = sum(n for n in nums if n % 2 == 0)\nodd_sum = sum(n for n in nums if n % 2 != 0)\nprint(even_sum, odd_sum)", "output": "12 9", "usesInput": false, "usesRandom": false}, {"id": 75, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Dictionary basics", "code": "student = {\"name\": \"Ali\", \"age\": 20, \"grade\": \"A\"}\nprint(student[\"name\"], student.get(\"age\"))", "output": "Ali 20", "usesInput": false, "usesRandom": false}, {"id": 76, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Word frequency counter", "code": "text = \"the cat sat on the mat the cat ran\"\nfreq = {}\nfor word in text.split():\n    freq[word] = freq.get(word, 0) + 1\nprint(freq)", "output": "{'the': 3, 'cat': 2, 'sat': 1, 'on': 1, 'mat': 1, 'ran': 1}", "usesInput": false, "usesRandom": false}, {"id": 77, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Tuple basics", "code": "point = (3, 4)\nx, y = point\nprint(x, y)", "output": "3 4", "usesInput": false, "usesRandom": false}, {"id": 78, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Set operations", "code": "a, b = {1, 2, 3}, {2, 3, 4}\nprint(a | b, a & b, a - b)", "output": "{1, 2, 3, 4} {2, 3} {1}", "usesInput": false, "usesRandom": false}, {"id": 79, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Matrix addition", "code": "A = [[1, 2], [3, 4]]\nB = [[5, 6], [7, 8]]\nresult = [[A[i][j] + B[i][j] for j in range(2)] for i in range(2)]\nprint(result)", "output": "[[6, 8], [10, 12]]", "usesInput": false, "usesRandom": false}, {"id": 80, "part": "Part 4: Lists, Tuples, Dicts, Sets (61\u201380)", "title": "Transpose a matrix", "code": "matrix = [[1, 2, 3], [4, 5, 6]]\ntransposed = [list(row) for row in zip(*matrix)]\nprint(transposed)", "output": "[[1, 4], [2, 5], [3, 6]]", "usesInput": false, "usesRandom": false}, {"id": 81, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Function to check prime", "code": "def is_prime(n):\n    return n > 1 and all(n % i != 0 for i in range(2, int(n**0.5) + 1))\n\nprint(is_prime(29))", "output": "True", "usesInput": false, "usesRandom": false}, {"id": 82, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Function with default arguments", "code": "def greet(name, msg=\"Good morning\"):\n    print(f\"{msg}, {name}!\")\n\ngreet(\"Sara\")\ngreet(\"Sara\", \"Good evening\")", "output": "Good morning, Sara!\nGood evening, Sara!", "usesInput": false, "usesRandom": false}, {"id": 83, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Recursive factorial", "code": "def factorial(n):\n    return 1 if n == 0 else n * factorial(n - 1)\n\nprint(factorial(6))", "output": "720", "usesInput": false, "usesRandom": false}, {"id": 84, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Recursive Fibonacci", "code": "def fib(n):\n    return n if n <= 1 else fib(n - 1) + fib(n - 2)\n\nprint([fib(i) for i in range(10)])", "output": "[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]", "usesInput": false, "usesRandom": false}, {"id": 85, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Lambda functions", "code": "square = lambda x: x ** 2\nadd = lambda a, b: a + b\nprint(square(5), add(3, 4))", "output": "25 7", "usesInput": false, "usesRandom": false}, {"id": 86, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Map, filter, reduce", "code": "from functools import reduce\nnums = [1, 2, 3, 4, 5]\nprint(list(map(lambda x: x * 2, nums)))\nprint(list(filter(lambda x: x % 2 == 0, nums)))\nprint(reduce(lambda a, b: a + b, nums))", "output": "[2, 4, 6, 8, 10]\n[2, 4]\n15", "usesInput": false, "usesRandom": false}, {"id": 87, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Simple class \u2014 Student", "code": "class Student:\n    def __init__(self, name, grade):\n        self.name = name\n        self.grade = grade\n\n    def display(self):\n        print(f\"{self.name} - Grade {self.grade}\")\n\ns = Student(\"Ali\", \"A\")\ns.display()", "output": "Ali - Grade A", "usesInput": false, "usesRandom": false}, {"id": 88, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Class with methods \u2014 BankAccount", "code": "class BankAccount:\n    def __init__(self, balance=0):\n        self.balance = balance\n\n    def deposit(self, amount):\n        self.balance += amount\n\n    def withdraw(self, amount):\n        if amount <= self.balance:\n            self.balance -= amount\n        else:\n            print(\"Insufficient funds\")\n\nacc = BankAccount(100)\nacc.deposit(50)\nacc.withdraw(30)\nprint(acc.balance)", "output": "120", "usesInput": false, "usesRandom": false}, {"id": 89, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Inheritance example", "code": "class Animal:\n    def speak(self):\n        print(\"Some sound\")\n\nclass Dog(Animal):\n    def speak(self):\n        print(\"Bark\")\n\nDog().speak()", "output": "Bark", "usesInput": false, "usesRandom": false}, {"id": 90, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Exception handling", "code": "try:\n    a = 10 / 0\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero\")\nfinally:\n    print(\"Done\")", "output": "Cannot divide by zero\nDone", "usesInput": false, "usesRandom": false}, {"id": 91, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Read and write to a text file", "code": "with open(\"sample.txt\", \"w\") as f:\n    f.write(\"Hello, file!\")\n\nwith open(\"sample.txt\", \"r\") as f:\n    print(f.read())", "output": "Hello, file!", "usesInput": false, "usesRandom": false}, {"id": 92, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Count lines/words in a file", "code": "with open(\"sample.txt\", \"r\") as f:\n    lines = f.readlines()\n    words = sum(len(line.split()) for line in lines)\nprint(\"Lines:\", len(lines), \"Words:\", words)", "output": "Lines: 1 Words: 2", "usesInput": false, "usesRandom": false}, {"id": 93, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Simple to-do list (file based)", "code": "def add_task(task):\n    with open(\"todo.txt\", \"a\") as f:\n        f.write(task + \"\\n\")\n\ndef show_tasks():\n    with open(\"todo.txt\", \"r\") as f:\n        print(f.read())\n\nadd_task(\"Practice Python\")\nshow_tasks()", "output": "Practice Python", "usesInput": false, "usesRandom": false}, {"id": 94, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Generate random numbers", "code": "import random\nprint(random.randint(1, 100))\nprint([random.randint(1, 10) for _ in range(5)])", "output": "82\n[2, 1, 5, 4, 4]", "usesInput": false, "usesRandom": true}, {"id": 95, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Dice roll simulator", "code": "import random\nroll = random.randint(1, 6)\nprint(f\"You rolled a {roll}\")", "output": "You rolled a 6", "usesInput": false, "usesRandom": true}, {"id": 96, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Rock-paper-scissors game", "code": "import random\noptions = [\"rock\", \"paper\", \"scissors\"]\nbeats = {\"rock\": \"scissors\", \"paper\": \"rock\", \"scissors\": \"paper\"}\nuser = \"rock\"\ncomputer = random.choice(options)\nprint(\"Computer chose:\", computer)\nif user == computer:\n    print(\"Tie\")\nelif beats[user] == computer:\n    print(\"You win!\")\nelse:\n    print(\"You lose!\")", "output": "Computer chose: scissors\nYou win!", "usesInput": false, "usesRandom": true}, {"id": 97, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Calculator using functions", "code": "def add(a, b): return a + b\ndef subtract(a, b): return a - b\ndef multiply(a, b): return a * b\ndef divide(a, b): return a / b if b != 0 else \"Error\"\n\nprint(add(4, 5), subtract(10, 3), multiply(6, 2), divide(9, 3))", "output": "9 7 12 3.0", "usesInput": false, "usesRandom": false}, {"id": 98, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Password strength checker", "code": "password = \"Pass123!\"\nstrong = (len(password) >= 8 and any(c.isupper() for c in password)\n          and any(c.isdigit() for c in password))\nprint(\"Strong\" if strong else \"Weak\")", "output": "Strong", "usesInput": false, "usesRandom": false}, {"id": 99, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Simple contact book (dict based)", "code": "contacts = {}\n\ndef add_contact(name, number):\n    contacts[name] = number\n\nadd_contact(\"Ali\", \"12345\")\nadd_contact(\"Sara\", \"67890\")\nprint(contacts)", "output": "{'Ali': '12345', 'Sara': '67890'}", "usesInput": false, "usesRandom": false}, {"id": 100, "part": "Part 5: Functions, OOP, Files & Mini Projects (81\u2013100)", "title": "Number guessing game (while loop)", "code": "import random\ntarget = random.randint(1, 50)\nguess = None\nattempts = 0\n\nwhile guess != target:\n    guess = int(input(\"Guess the number (1-50): \"))\n    attempts += 1\n    if guess < target:\n        print(\"Too low\")\n    elif guess > target:\n        print(\"Too high\")\n\nprint(f\"Correct! It took {attempts} attempts.\")", "output": "Correct! It took 1 attempts.", "usesInput": true, "usesRandom": true}]</script>
+<script>
+const DATA = JSON.parse(document.getElementById('program-data').textContent);
+
+const KEYWORDS = ["def","return","if","elif","else","for","while","in","not","and","or",
+  "import","from","as","class","try","except","finally","with","lambda","pass","break",
+  "continue","True","False","None","is","yield","global","raise","assert","del","self"];
+
+function escapeHtml(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function highlight(code){
+  const placeholders = [];
+  function stash(html){
+    placeholders.push(html);
+    return "\u0000" + (placeholders.length - 1) + "\u0001";
+  }
+  let src = escapeHtml(code);
+
+  // comments
+  src = src.replace(/#.*/g, m => stash(`<span class="cm">${m}</span>`));
+  // triple + single/double quoted strings (naive, non-multiline-aware enough for these snippets)
+  src = src.replace(/("""[\s\S]*?"""|'''[\s\S]*?'''|f?"(?:[^"\\]|\\.)*"|f?'(?:[^'\\]|\\.)*')/g,
+    m => stash(`<span class="st">${m}</span>`));
+  // numbers
+  src = src.replace(/\b\d+(\.\d+)?\b/g, m => stash(`<span class="nm">${m}</span>`));
+  // function defs/calls (word followed by '(')
+  src = src.replace(/\b([a-zA-Z_]\w*)(?=\()/g, (m, name) => {
+    if (KEYWORDS.includes(name)) return m;
+    return stash(`<span class="fn">${name}</span>`);
+  });
+  // keywords
+  const kwPattern = new RegExp("\\b(" + KEYWORDS.join("|") + ")\\b", "g");
+  src = src.replace(kwPattern, m => stash(`<span class="kw">${m}</span>`));
+
+  src = src.replace(/\u0000(\d+)\u0001/g, (_, i) => placeholders[parseInt(i,10)]);
+  return src;
+}
+
+// ---------- sidebar ----------
+const partsContainer = document.getElementById('partsContainer');
+const partsOrder = [];
+const byPart = {};
+DATA.forEach(p => {
+  if (!byPart[p.part]) { byPart[p.part] = []; partsOrder.push(p.part); }
+  byPart[p.part].push(p);
+});
+
+function buildSidebar(filterText){
+  partsContainer.innerHTML = "";
+  const q = (filterText || "").trim().toLowerCase();
+  partsOrder.forEach((partName, idx) => {
+    const items = byPart[partName].filter(p =>
+      !q || p.title.toLowerCase().includes(q) || String(p.id).includes(q)
+    );
+    if (q && items.length === 0) return;
+
+    const group = document.createElement('div');
+    group.className = 'part-group' + (q ? '' : (idx > 0 ? ' collapsed' : ''));
+    group.dataset.part = partName;
+
+    const toggle = document.createElement('button');
+    toggle.className = 'part-toggle';
+    toggle.innerHTML = `<span>${partName}</span><span class="chev">▾</span>`;
+    toggle.onclick = () => group.classList.toggle('collapsed');
+    group.appendChild(toggle);
+
+    const list = document.createElement('ul');
+    list.className = 'part-list';
+    items.forEach(p => {
+      const li = document.createElement('li');
+      const btn = document.createElement('button');
+      btn.className = 'prog-item' + (p.id === state.activeId ? ' active' : '');
+      btn.dataset.id = p.id;
+      btn.innerHTML = `<span class="n">${String(p.id).padStart(3,'0')}</span><span>${escapeHtml(p.title)}</span>`;
+      btn.onclick = () => selectProgram(p.id);
+      li.appendChild(btn);
+      list.appendChild(li);
+    });
+    group.appendChild(list);
+    partsContainer.appendChild(group);
+  });
+}
+
+document.getElementById('search').addEventListener('input', e => buildSidebar(e.target.value));
+
+// ---------- socials ----------
+const SOCIALS = {
+  youtube: "https://youtube.com/@real.shahzaib7?si=y-aWEBChspwo1pGp",
+  instagram: "https://www.instagram.com/real.shahzaib_",
+  whatsapp: "https://whatsapp.com/channel/0029VbDLNmm7j6gCMQqUAe2W"
+};
+
+const ICONS = {
+  youtube: '<svg viewBox="0 0 24 24" width="16" height="16"><rect x="1" y="5" width="22" height="14" rx="4" fill="currentColor" opacity="0.18"/><path d="M10 8.3v7.4l6.2-3.7z" fill="currentColor"/></svg>',
+  instagram: '<svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg>',
+  whatsapp: '<svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 3a9 9 0 0 0-7.75 13.5L3 21l4.7-1.23A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.6 9.6c.35 2.5 2.4 4.6 4.9 4.9.6.07 1.15-.1 1.35-.6l.25-.65c.1-.28-.02-.58-.28-.72l-1.35-.72c-.24-.13-.53-.08-.72.13l-.38.42c-.9-.42-1.65-1.15-2.05-2.05l.42-.38c.2-.19.25-.48.13-.72L10.15 7.8c-.14-.26-.44-.38-.72-.28l-.65.25c-.5.2-.67.75-.6 1.35z" fill="currentColor"/></svg>'
+};
+
+function buildMarquee(){
+  const track = document.getElementById('marqueeTrack');
+  const groupHtml = `
+    <span class="credit">Coded by <b>Shahzaib Malik</b></span>
+    <span class="sep">•</span>
+    <a href="${SOCIALS.youtube}" target="_blank" rel="noopener">▶ Subscribe on YouTube</a>
+    <span class="sep">•</span>
+    <a href="${SOCIALS.instagram}" target="_blank" rel="noopener">📷 Follow on Instagram</a>
+    <span class="sep">•</span>
+    <a href="${SOCIALS.whatsapp}" target="_blank" rel="noopener">💬 Join the WhatsApp channel</a>
+    <span class="sep">•</span>
+  `;
+  track.innerHTML =
+    `<div class="marquee-group">${groupHtml}</div><div class="marquee-group">${groupHtml}</div>`;
+}
+
+function connectBarHtml(){
+  return `
+    <div class="promo-banner">
+      <p class="promo-eyebrow">Enjoying the practice?</p>
+      <h3 class="promo-title">Help this project grow 🚀</h3>
+      <p class="promo-body">If these programs are helping you learn, the biggest thing you can do to support more free content like this is subscribe, follow, and join the channel below — it takes 10 seconds and means a lot.</p>
+      <div class="promo-actions">
+        <a class="promo-btn primary" href="${SOCIALS.youtube}" target="_blank" rel="noopener">${ICONS.youtube} Subscribe on YouTube</a>
+        <a class="promo-btn secondary" href="${SOCIALS.instagram}" target="_blank" rel="noopener">${ICONS.instagram} Follow on Instagram</a>
+        <a class="promo-btn secondary" href="${SOCIALS.whatsapp}" target="_blank" rel="noopener">${ICONS.whatsapp} Join WhatsApp channel</a>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- main panel ----------
+const main = document.getElementById('main');
+const state = { activeId: null, pyodideReady: null, pyodide: null };
+
+function renderProgram(p){
+  main.innerHTML = `
+    <div class="prog-header">
+      <div>
+        <p class="prog-eyebrow">${escapeHtml(p.part.split(':')[0])} · Program ${String(p.id).padStart(3,'0')}</p>
+        <h2 class="prog-title">${escapeHtml(p.title)}</h2>
+        <div class="prog-flags">
+          ${p.usesInput ? '<span class="flag">asks for input</span>' : ''}
+          ${p.usesRandom ? '<span class="flag">uses random</span>' : ''}
+        </div>
+      </div>
+      <div>
+        <button class="run-btn" id="runBtn">▶ Run</button>
+        <div class="run-status" id="runStatus">Ready</div>
+      </div>
+    </div>
+
+    <div class="panes">
+      <div>
+        <p class="pane-label"><span class="dot code"></span>code.py</p>
+        <div class="editor">
+          <div class="editor-bar"><span></span><span></span><span></span></div>
+          <pre>${highlight(p.code)}</pre>
+        </div>
+      </div>
+      <div>
+        <p class="pane-label"><span class="dot paper"></span>printout</p>
+        <div class="printer">
+          <div class="printer-inner">
+            <div class="printer-meta">
+              <span>RUN #${String(p.id).padStart(3,'0')}</span>
+              <span id="printerTime">—</span>
+            </div>
+            <div class="printer-body" id="printerBody"><span class="printer-placeholder">Awaiting run ▸</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="note" id="progNote"></p>
+
+    ${connectBarHtml()}
+  `;
+
+  const note = document.getElementById('progNote');
+  let noteParts = [];
+  if (p.usesInput) noteParts.push('This program normally asks for input — a browser prompt will pop up when you run it.');
+  if (p.usesRandom) noteParts.push('This program uses <b>random</b>, so the printout will be different every time you run it.');
+  note.innerHTML = noteParts.join(' ');
+
+  document.getElementById('runBtn').onclick = () => runProgram(p);
+}
+
+function selectProgram(id){
+  state.activeId = id;
+  const p = DATA.find(x => x.id === id);
+  renderProgram(p);
+  document.querySelectorAll('.prog-item').forEach(el => {
+    el.classList.toggle('active', parseInt(el.dataset.id,10) === id);
+  });
+}
+
+// ---------- pyodide (lazy) ----------
+function loadPyodideScript(timeoutMs){
+  return new Promise((resolve, reject) => {
+    if (window.loadPyodide) { resolve(); return; }
+    const script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js";
+    let done = false;
+    const timer = setTimeout(() => {
+      if (!done) { done = true; reject(new Error('timeout loading pyodide')); }
+    }, timeoutMs);
+    script.onload = () => { if (!done) { done = true; clearTimeout(timer); resolve(); } };
+    script.onerror = () => { if (!done) { done = true; clearTimeout(timer); reject(new Error('failed to load pyodide script')); } };
+    document.head.appendChild(script);
+  });
+}
+
+async function getPyodide(){
+  if (state.pyodide) return state.pyodide;
+  await loadPyodideScript(9000);
+  const pyodide = await window.loadPyodide({ timeout: 15000 });
+  pyodide.globals.set('js_prompt', (promptText) => {
+    const val = window.prompt(promptText || 'Input:');
+    return val === null ? '' : val;
+  });
+  state.pyodide = pyodide;
+  return pyodide;
+}
+
+function indent(code, spaces){
+  const pad = ' '.repeat(spaces);
+  return code.split('\n').map(line => line.length ? pad + line : line).join('\n');
+}
+
+async function runLive(p){
+  const pyodide = await getPyodide();
+  const wrapped =
+`import io, contextlib, builtins
+def _js_input(prompt=''):
+    return js_prompt(prompt)
+builtins.input = _js_input
+_buf = io.StringIO()
+with contextlib.redirect_stdout(_buf):
+${indent(p.code, 4)}
+_buf.getvalue()`;
+  const result = await pyodide.runPythonAsync(wrapped);
+  return result;
+}
+
+function typeOut(text, isError){
+  const body = document.getElementById('printerBody');
+  body.innerHTML = '';
+  const span = document.createElement('span');
+  if (isError) span.className = 'printer-error';
+  body.appendChild(span);
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  body.appendChild(cursor);
+
+  const chars = (text && text.length) ? text.split('') : [];
+  let i = 0;
+  const step = Math.max(1, Math.floor(chars.length / 220));
+  function tick(){
+    if (i >= chars.length){
+      cursor.remove();
+      if (chars.length === 0){
+        span.innerHTML = '<span class="printer-placeholder">(no output)</span>';
+      }
+      return;
+    }
+    span.textContent += chars.slice(i, i + step).join('');
+    i += step;
+    requestAnimationFrame(() => setTimeout(tick, 8));
+  }
+  tick();
+}
+
+async function runProgram(p){
+  const btn = document.getElementById('runBtn');
+  const status = document.getElementById('runStatus');
+  const time = document.getElementById('printerTime');
+  btn.disabled = true;
+  time.textContent = new Date().toLocaleTimeString();
+
+  try{
+    status.textContent = 'Booting Python runtime…';
+    const output = await runLive(p);
+    status.textContent = '● Live run · Pyodide';
+    typeOut(output, false);
+  }catch(err){
+    status.textContent = 'Live runtime unavailable — showing captured output from an earlier run';
+    typeOut(p.output, false);
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+// ---------- boot ----------
+buildMarquee();
+buildSidebar('');
+selectProgram(1);
+
+</script>
+</body>
+</html>
